@@ -6,6 +6,7 @@ import addTodo from './controllers/addTodo.js'; // Ensure the path is correct
 import getAllTodos from "./controllers/getAllTodos.js";
 import updateTodo from "./controllers/updateTodo.js"; // Import the database connection
 import deleteTodo from "./controllers/deleteTodo.js"
+import updateStatus from "./controllers/updateStatus.js";
 
 const app = express();
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use('/todos', addTodo)
 app.use('/alltodos',getAllTodos)
 app.use('/updatetodo',updateTodo)
 app.use('/deletetodo',deleteTodo)
+app.use('/updateStatus',updateStatus)
 
 
 // Handle invalid routes
