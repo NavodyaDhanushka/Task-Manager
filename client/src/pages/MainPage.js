@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 
 export default function MainPage() {
     const [todos, setTodos] = useState([]);
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
+    const [addTaskName, setAddTaskName] = useState(""); // Separate state for add task form
+    const [addTaskDescription, setAddTaskDescription] = useState(""); // Separate state for add task form
+    const [editTaskName, setEditTaskName] = useState(""); // Separate state for edit task form
+    const [editTaskDescription, setEditTaskDescription] = useState(""); // Separate state for edit task form
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [currentTodoId, setCurrentTodoId] = useState(null);
 
     // Fetch all todos from the database when the component mounts
     useEffect(() => {
@@ -25,8 +29,8 @@ export default function MainPage() {
     }, []);
 
     const addTodo = async () => {
-        if (name.trim() && description.trim()) {
-            const newTodo = { name, description, completed: false };
+        if (addTaskName.trim() && addTaskDescription.trim()) {
+            const newTodo = { name: addTaskName, description: addTaskDescription, completed: false };
 
             try {
                 // Save the new todo in the database
@@ -37,13 +41,12 @@ export default function MainPage() {
                     },
                     body: JSON.stringify(newTodo),
                 });
-                console.log(response);
 
                 if (response.ok) {
                     const savedTodo = await response.json();
                     setTodos([...todos, savedTodo]); // Add the saved todo to the list
-                    setName("");
-                    setDescription("");
+                    setAddTaskName(""); // Clear add task input fields
+                    setAddTaskDescription(""); // Clear add task input fields
                 } else {
                     console.error("Failed to save todo");
                 }
@@ -55,15 +58,20 @@ export default function MainPage() {
 
     const toggleComplete = async (index) => {
         const updatedTodos = [...todos];
-        updatedTodos[index].completed = !updatedTodos[index].completed;
+        const todo = updatedTodos[index];
+
+        // Toggle the 'completed' status
+        todo.completed = !todo.completed;
 
         try {
-            const response = await fetch(`http://localhost:5000/todos/${updatedTodos[index].id}`, {
+            const status = todo.completed ? 'completed' : 'not-completed';
+
+            const response = await fetch(`http://localhost:8000/updateStatus/${todo.id}/${status}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(updatedTodos[index]),
+                body: JSON.stringify({ completed: todo.completed }),
             });
 
             if (response.ok) {
@@ -80,7 +88,7 @@ export default function MainPage() {
         const todoToDelete = todos[index];
 
         try {
-            const response = await fetch(`http://localhost:5000/todos/${todoToDelete.id}`, {
+            const response = await fetch(`http://localhost:8000/deletetodo/${todoToDelete.id}`, {
                 method: "DELETE",
             });
 
@@ -94,39 +102,70 @@ export default function MainPage() {
         }
     };
 
+    const openEditModal = (todo) => {
+        setCurrentTodoId(todo.id);
+        setEditTaskName(todo.name); // Set values for edit modal
+        setEditTaskDescription(todo.description); // Set values for edit modal
+        setIsEditModalOpen(true);
+    };
+
+    const updateTodo = async () => {
+        if (editTaskName.trim() && editTaskDescription.trim()) {
+            const updatedTodo = { name: editTaskName, description: editTaskDescription, completed: false };
+
+            try {
+                const response = await fetch(`http://localhost:8000/updatetodo/${currentTodoId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedTodo),
+                });
+
+                if (response.ok) {
+                    const updatedTodos = todos.map((todo) =>
+                        todo.id === currentTodoId ? { ...todo, name: editTaskName, description: editTaskDescription } : todo
+                    );
+                    setTodos(updatedTodos);
+                    setIsEditModalOpen(false);
+                } else {
+                    console.error("Failed to update todo");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 flex justify-center items-center">
             <div className="bg-white shadow-lg rounded-lg p-6 w-96">
-                <h1 className="text-2xl font-bold text-purple-600 text-center mb-4">
-                    Todo App
-                </h1>
+                <h1 className="text-2xl font-bold text-purple-600 text-center mb-4">Task Manager</h1>
                 <div className="flex flex-col space-y-2 mb-4">
                     <input
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={addTaskName}
+                        onChange={(e) => setAddTaskName(e.target.value)}
                         className="border rounded-lg px-4 py-2 text-black"
-                        placeholder="Enter todo name"
+                        placeholder="Enter task name"
                     />
                     <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={addTaskDescription}
+                        onChange={(e) => setAddTaskDescription(e.target.value)}
                         className="border rounded-lg px-4 py-2 text-black"
-                        placeholder="Enter todo description"
+                        placeholder="Enter task description"
                     />
                     <button
                         onClick={addTodo}
                         className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
                     >
-                        Add Todo
+                        Add Task
                     </button>
                 </div>
+
                 <ul>
                     {todos.map((todo, index) => (
-                        <li
-                            key={index}
-                            className="flex items-center justify-between border-b py-2"
-                        >
+                        <li key={index} className="flex items-center justify-between border-b py-2">
                             <div className="flex-grow">
                                 <div className={`text-black font-bold ${todo.completed ? "line-through text-gray-400" : ""}`}>
                                     {todo.name}
@@ -138,10 +177,14 @@ export default function MainPage() {
                             <div className="flex items-center space-x-2">
                                 <button
                                     onClick={() => toggleComplete(index)}
-                                    className={`${
-                                        todo.completed ? "bg-purple-600" : "bg-gray-300"
-                                    } w-6 h-6 rounded-full`}
+                                    className={`${todo.completed ? "bg-purple-600" : "bg-gray-300"} w-6 h-6 rounded-full`}
                                 />
+                                <button
+                                    onClick={() => openEditModal(todo)}
+                                    className="text-blue-600 hover:text-blue-800"
+                                >
+                                    ✏️
+                                </button>
                                 <button
                                     onClick={() => deleteTodo(index)}
                                     className="text-red-600 hover:text-red-800"
@@ -152,6 +195,41 @@ export default function MainPage() {
                         </li>
                     ))}
                 </ul>
+
+                {isEditModalOpen && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-xl font-semibold mb-4">Edit Todo</h2>
+                            <input
+                                type="text"
+                                value={editTaskName}
+                                onChange={(e) => setEditTaskName(e.target.value)}
+                                className="border rounded-lg px-4 py-2 text-black mb-4 w-full"
+                                placeholder="Enter todo name"
+                            />
+                            <textarea
+                                value={editTaskDescription}
+                                onChange={(e) => setEditTaskDescription(e.target.value)}
+                                className="border rounded-lg px-4 py-2 text-black mb-4 w-full"
+                                placeholder="Enter todo description"
+                            />
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={updateTodo}
+                                    className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -18,7 +18,7 @@ const getAllTodos = async () => {
     const query = "SELECT * FROM todos";
     const [todos] = await db.query(query);
     return todos;
-}
+};
 
 // Update a todo by ID
 const updateTodo = async (id, { name, description, completed }) => {
@@ -55,12 +55,32 @@ const deleteTodo = async (id) => {
     }
 };
 
+// Update the status of a todo by ID
+const updateStatus = async (id, completed) => {
+    try {
+        // Query to update only the 'completed' status in the database
+        const query = "UPDATE todos SET completed = ? WHERE id = ?";
+        const [result] = await db.query(query, [completed, id]);
+
+        // If no rows were affected, throw an error
+        if (result.affectedRows === 0) {
+            return null;  // Return null if the todo isn't found
+        }
+
+        return {
+            todoId: id,
+            message: 'Todo status updated successfully'
+        };
+    } catch (error) {
+        console.error("Error in service:", error);
+        throw error;  // Propagate error to the controller
+    }
+};
 
 export default {
     addTodo,
     getAllTodos,
     updateTodo,
-    deleteTodo
+    deleteTodo,
+    updateStatus
 };
-
-
