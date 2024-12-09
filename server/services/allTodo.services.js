@@ -77,10 +77,31 @@ const updateStatus = async (id, completed) => {
     }
 };
 
+// Fetch todos by status
+const getTodosByStatus = async (status) => {
+    try {
+        let query = 'SELECT * FROM todos';
+        const queryParams = [];
+
+        if (status === 'complete') {
+            query += ' WHERE completed = true';
+        } else if (status === 'incomplete') {
+            query += ' WHERE completed = false';
+        }
+
+        const [todos] = await db.query(query, queryParams); // Query the database
+        return todos; // Return the results
+    } catch (error) {
+        console.error('Error in getTodosByStatus service:', error);
+        throw new Error('An error occurred while fetching todos.');
+    }
+};
+
 export default {
     addTodo,
     getAllTodos,
     updateTodo,
     deleteTodo,
-    updateStatus
+    updateStatus,
+    getTodosByStatus
 };
