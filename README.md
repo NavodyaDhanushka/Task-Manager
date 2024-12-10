@@ -29,9 +29,9 @@ The Task Manager is designed to be user-friendly, flexible, and efficient for or
   GET /alltodos
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+| Parameter | Type | Description |
+|:----------|:-----|:------------|
+|           |      |             |
 
 #### Add a new task
 
@@ -43,7 +43,7 @@ The Task Manager is designed to be user-friendly, flexible, and efficient for or
 | :-------- | :------- | :-------------------------------- |
 | `name`      | `string` | **Required**. Name of the task |
 | `description`      | `string` | **Required**. Description of task |
-| `completed`      | `boolean` | **Required**. Status of the task (default is false or incompleted) |
+| `completed`      | `boolean` | **Required**. Status of the task (default is false) |
 
 
 #### Update a task

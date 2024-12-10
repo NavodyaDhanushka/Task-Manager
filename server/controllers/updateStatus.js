@@ -3,15 +3,14 @@ import service from '../services/allTodo.services.js';
 
 const router = express.Router();
 
-// Update todo status by ID
+// Update Tasks status by ID
 router.put('/:id/:status', async (req, res, next) => {
     try {
-        const { id, status } = req.params;  // Get the ID and status from the URL
+        const { id, status } = req.params;
 
-        // Ensure the 'status' parameter is either 'completed' or 'not-completed'
-        const completed = status === 'completed';  // Set 'completed' to true if 'completed', false otherwise
+        const completed = status === 'completed';
 
-        const result = await service.updateStatus(id, completed);  // Call the service to update the status
+        const result = await service.updateStatus(id, completed);
 
         if (result) {
             res.status(200).json({
@@ -25,7 +24,7 @@ router.put('/:id/:status', async (req, res, next) => {
         }
     } catch (error) {
         console.error("Error in updateStatus route:", error);
-        next(error);  // Forward any error to the error handler middleware
+        next(error);
     }
 });
 

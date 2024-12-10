@@ -3,14 +3,14 @@ import service from '../services/allTodo.services.js';
 
 const router = express.Router();
 
-// Delete a todo by ID
+// Delete a Task by ID
 router.delete('/:id', async (req, res, next) => {
     try {
-        const { id } = req.params; // Get the todo ID from the URL
-        await service.deleteTodo(id); // Call the service to delete the todo
-        res.status(200).json({ message: `Todo with ID ${id} deleted successfully` }); // Send a success response
+        const { id } = req.params;
+        await service.deleteTodo(id);
+        res.status(200).json({ message: `Todo with ID ${id} deleted successfully` });
     } catch (error) {
-        next(error); // Forward any error to the error handler middleware
+        next(error);
     }
 });
 
