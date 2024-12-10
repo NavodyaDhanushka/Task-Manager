@@ -3,16 +3,16 @@ import service from '../services/allTodo.services.js';
 
 const router = express.Router();
 
-// Update a todo by ID
+// Update a Tasks by ID
 router.put('/:id', async (req, res, next) => {
     try {
-        const { id } = req.params; // Get the todo ID from the URL
-        const { name, description, completed } = req.body; // Get the updated todo data from the request body
+        const { id } = req.params;
+        const { name, description, completed } = req.body;
 
-        const updatedTodo = await service.updateTodo(id, { name, description, completed }); // Call the service to update the todo
-        res.status(200).json(updatedTodo); // Send the updated todo as a response
+        const updatedTask = await service.updateTodo(id, { name, description, completed });
+        res.status(200).json(updatedTask);
     } catch (error) {
-        next(error); // Forward any error to the error handler middleware
+        next(error);
     }
 });
 

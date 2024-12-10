@@ -3,13 +3,13 @@ import service from '../services/allTodo.services.js';
 
 const router = express.Router();
 
-// Get all todos
+// Get all Tasks
 router.get('/', async (req, res, next) => {
     try {
-        const todos = await service.getAllTodos(); // Call the service method
-        res.send(todos); // Send the todos as a response
+        const tasks = await service.getAllTodos();
+        res.send(tasks);
     } catch (error) {
-        next(error); // Forward any errors to the error-handling middleware
+        next(error);
     }
 });
 

@@ -15,11 +15,10 @@ const MainPage = () => {
 
     // Lock page overflow on component mount
     useEffect(() => {
-        document.body.style.overflowY = "hidden";  // Lock the page scroll
+        document.body.style.overflowY = "hidden";
 
-        // Clean up on component unmount
         return () => {
-            document.body.style.overflowY = "auto";  // Re-enable page scroll
+            document.body.style.overflowY = "auto";
         };
     }, []);
 
@@ -101,7 +100,6 @@ const MainPage = () => {
     const deleteTodo = async (index) => {
         const todoToDelete = todos[index];
 
-        // Show SweetAlert2 confirmation dialog
         const result = await Swal.fire({
             title: 'Are you sure?',
             //text: "You want to delete the event?",
@@ -112,7 +110,6 @@ const MainPage = () => {
             confirmButtonText: 'Yes, delete it!'
         });
 
-        // If user clicks "Yes"
         if (result.isConfirmed) {
             try {
                 const response = await fetch(`http://localhost:8000/deletetodo/${todoToDelete.id}`, {
@@ -121,8 +118,8 @@ const MainPage = () => {
 
                 if (response.ok) {
                     setTodos(todos.filter((_, i) => i !== index));
-                    // Show success message
-                    Swal.fire(
+
+                    await Swal.fire(
                         'Deleted!',
                         'Your task has been deleted.',
                         'success'
@@ -165,8 +162,7 @@ const MainPage = () => {
                     setIsEditModalOpen(false);
                     setEditErrorMessage("");
 
-                    // Show success message using SweetAlert2
-                    Swal.fire({
+                    await Swal.fire({
                         title: 'Success!',
                         text: 'Task updated successfully',
                         icon: 'success',
@@ -190,7 +186,6 @@ const MainPage = () => {
                     Task Manager
                 </h1>
 
-                {/* Error Message */}
                 {errorMessage && (
                     <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6">
                         {errorMessage}
@@ -234,12 +229,15 @@ const MainPage = () => {
 
                 <ul className="space-y-4 mb-6 overflow-y-auto max-h-[400px] pr-2">
                     {todos.map((todo, index) => (
-                        <li key={index} className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all border border-gray-100">
+                        <li key={index}
+                            className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all border border-gray-100">
                             <div className="flex-grow">
-                                <div className={`font-semibold ${todo.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
+                                <div
+                                    className={`font-semibold ${todo.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
                                     {todo.name}
                                 </div>
-                                <div className={`text-sm mt-1 ${todo.completed ? "line-through text-gray-400" : "text-gray-600"}`}>
+                                <div
+                                    className={`text-sm mt-1 ${todo.completed ? "line-through text-gray-400" : "text-gray-600"}`}>
                                     {todo.description}
                                 </div>
                             </div>
@@ -248,24 +246,30 @@ const MainPage = () => {
                                     onClick={() => toggleComplete(index)}
                                     className={`${todo.completed ? "text-green-600 bg-green-50" : "text-gray-400 bg-gray-50"} p-2 rounded-lg transition-all duration-200 hover:opacity-80 flex items-center justify-center`}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
                                 </button>
                                 <button
                                     onClick={() => openEditModal(todo)}
                                     className="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-all flex items-center justify-center"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
                                     </svg>
                                 </button>
                                 <button
                                     onClick={() => deleteTodo(index)}
                                     className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-all flex items-center justify-center"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                     </svg>
                                 </button>
                             </div>
@@ -273,9 +277,10 @@ const MainPage = () => {
                     ))}
                 </ul>
 
-                {/* Edit Modal */}
+
                 {isEditModalOpen && (
-                    <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 backdrop-blur-sm">
+                    <div
+                        className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 backdrop-blur-sm">
                         <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-screen-sm m-4">
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Task</h2>
 

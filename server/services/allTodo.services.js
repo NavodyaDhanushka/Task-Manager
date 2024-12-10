@@ -20,18 +20,16 @@ const getAllTodos = async () => {
     return todos;
 };
 
-// Update a todo by ID
+// Update a task by ID
 const updateTodo = async (id, { name, description, completed }) => {
-    // Validate that the required fields are present
+
     if (!name || !description) {
         throw new Error('Todo name and description are required');
     }
 
-    // Query to update the todo in the database
     const query = "UPDATE todos SET name = ?, description = ?, completed = ? WHERE id = ?";
     const [result] = await db.query(query, [name, description, completed, id]);
 
-    // If no rows were affected, throw an error
     if (result.affectedRows === 0) {
         throw new Error('Todo not found');
     }
@@ -55,16 +53,14 @@ const deleteTodo = async (id) => {
     }
 };
 
-// Update the status of a todo by ID
+// Update the status of a task by ID
 const updateStatus = async (id, completed) => {
     try {
-        // Query to update only the 'completed' status in the database
         const query = "UPDATE todos SET completed = ? WHERE id = ?";
         const [result] = await db.query(query, [completed, id]);
 
-        // If no rows were affected, throw an error
         if (result.affectedRows === 0) {
-            return null;  // Return null if the todo isn't found
+            return null;
         }
 
         return {
@@ -73,11 +69,11 @@ const updateStatus = async (id, completed) => {
         };
     } catch (error) {
         console.error("Error in service:", error);
-        throw error;  // Propagate error to the controller
+        throw error;
     }
 };
 
-// Fetch todos by status
+// Fetch tasks by status
 const getTodosByStatus = async (status) => {
     try {
         let query = 'SELECT * FROM todos';
@@ -89,8 +85,8 @@ const getTodosByStatus = async (status) => {
             query += ' WHERE completed = false';
         }
 
-        const [todos] = await db.query(query, queryParams); // Query the database
-        return todos; // Return the results
+        const [todos] = await db.query(query, queryParams);
+        return todos;
     } catch (error) {
         console.error('Error in getTodosByStatus service:', error);
         throw new Error('An error occurred while fetching todos.');
