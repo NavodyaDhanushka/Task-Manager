@@ -3,4 +3,4 @@ client/node_modules
 server/node_modeuls
 .idea/
 .idea
-
+/.jetclient/
