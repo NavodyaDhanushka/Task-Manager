@@ -100,7 +100,7 @@ Follow these steps to set up and run the application locally
 git clone https://github.com/NavodyaDhanushka/Task-Manager.git
 ```
 2. Create and Configure the Database
-   Open MySQL Workbench, and execute the following SQL commands to create and configure the database:
+   Open MySQL Workbench, and execute the following SQL commands to create and configure the database
 ```bash
 
 CREATE DATABASE todo_db;
