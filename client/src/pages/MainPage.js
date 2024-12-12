@@ -13,7 +13,6 @@ const MainPage = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [editErrorMessage, setEditErrorMessage] = useState("");
 
-    // Lock page overflow on component mount
     useEffect(() => {
         document.body.style.overflowY = "hidden";
 
