@@ -43,20 +43,25 @@ const MainPage = () => {
     }, [filter]);
 
     const validateAddTask = () => {
-        if (!addTaskName.trim() || !addTaskDescription.trim()) {
-            setErrorMessage("Task name and description cannot be empty");
+        if (!addTaskName.trim()) {
+            setErrorMessage("Task name cannot be empty");
             return false;
         }
-        if (addTaskName.length < 5 || addTaskName.length > 20) {
-            setErrorMessage("Task name must be between 5 and 20 characters long");
+        if (!addTaskDescription.trim()) {
+            setErrorMessage("Task description cannot be empty");
             return false;
         }
-        if (addTaskDescription.length < 5 || addTaskDescription.length > 100) {
-            setErrorMessage("Task description must be between 10 and 100 characters long");
+        if (addTaskName.length > 20) {
+            setErrorMessage("Task name must be 20 characters or fewer");
+            return false;
+        }
+        if (addTaskDescription.length > 100) {
+            setErrorMessage("Task description must be 100 characters or fewer");
             return false;
         }
         return true;
     };
+
 
     const addTodo = async () => {
         if (validateAddTask()) {
@@ -154,20 +159,25 @@ const MainPage = () => {
     };
 
     const validateEditTask = () => {
-        if (!editTaskName.trim() || !editTaskDescription.trim()) {
-            setEditErrorMessage("Task name and description cannot be empty");
+        if (!editTaskName.trim()) {
+            setEditErrorMessage("Task name cannot be empty");
             return false;
         }
-        if (editTaskName.length < 5 || editTaskName.length > 20) {
-            setEditErrorMessage("Task name must be between 5 and 20 characters long");
+        if (!editTaskDescription.trim()) {
+            setEditErrorMessage("Task description cannot be empty");
             return false;
         }
-        if (editTaskDescription.length < 10 || editTaskDescription.length > 100) {
-            setEditErrorMessage("Task description must be between 10 and 100 characters long");
+        if (editTaskName.length > 20) {
+            setEditErrorMessage("Task name must be 20 characters or fewer");
+            return false;
+        }
+        if (editTaskDescription.length > 100) {
+            setEditErrorMessage("Task description must be 100 characters or fewer");
             return false;
         }
         return true;
     };
+
 
     const updateTodo = async () => {
         if (validateEditTask()) {

@@ -15,7 +15,7 @@ const addTodo = async ({ name, description, completed = false }) => {
 };
 
 const getAllTodos = async () => {
-    const query = "SELECT * FROM todos";
+    const query = "SELECT * FROM todos ORDER BY id DESC";
     const [todos] = await db.query(query);
     return todos;
 };
@@ -73,7 +73,7 @@ const updateStatus = async (id, completed) => {
     }
 };
 
-// Fetch tasks by status
+// Filter tasks by status
 const getTodosByStatus = async (status) => {
     try {
         let query = 'SELECT * FROM todos';
