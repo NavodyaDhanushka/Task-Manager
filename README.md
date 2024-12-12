@@ -95,20 +95,14 @@ The Task Manager is designed to be user-friendly, flexible, and efficient for or
 Follow these steps to set up and run the application locally
 
 1. Clone the Repository
-   Using a terminal or command prompt, clone the repository to your local machine
 ```bash
+
 git clone https://github.com/NavodyaDhanushka/Task-Manager.git
 ```
-2. Set Up MySQL Database
-   Download and install MySQL and MySQL Workbench.
-   https://www.mysql.com/downloads
-
-   Configure MySQL with your preferred username and password.
-
-3. Create and Configure the Database
+2. Create and Configure the Database
    Open MySQL Workbench, and execute the following SQL commands to create and configure the database:
 ```bash
-sql
+
 CREATE DATABASE todo_db;
 
 USE todo_db;
@@ -122,34 +116,36 @@ CREATE TABLE todos (
 ```
 Update the db.js file in the project to include your MySQL username and password.
 
-4. Install Dependencies
-   Open the project folder in any IDE or terminal.
-
+3. Install Dependencies
    Navigate to the client directory
 ```bash
+
 cd ./client
 ```
 Install the necessary dependencies
 ```bash
+
 npm i
 ```
 Repeat the above steps for the server directory.
 
-5. Run the Application
+4. Run the Application
 
-Ensure there are no errors during the installation process.
 Start the application using the provided scripts in the client and server directories.
 Usage
 Once the setup is complete, you can use the application to manage your tasks efficiently.
 
 Navigate to the client directory in your terminal and run
 ```bash
+
 npm start
 ```
 Similarly, start the server by navigating to the server directory and running
 ```bash
+
 npm start
 ```
+5.
 Open your browser and access the application at http://localhost:3000.
 
     
