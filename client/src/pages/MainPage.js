@@ -31,7 +31,7 @@ const MainPage = () => {
                 const data = await response.json();
                 setTodos(data);
             } else {
-                setErrorMessage("Failed to fetch todos");
+                setErrorMessage("Failed to fetch task");
             }
         } catch (error) {
             setErrorMessage("Error: " + error.message);
@@ -42,8 +42,24 @@ const MainPage = () => {
         fetchTodos(filter);
     }, [filter]);
 
+    const validateAddTask = () => {
+        if (!addTaskName.trim() || !addTaskDescription.trim()) {
+            setErrorMessage("Task name and description cannot be empty");
+            return false;
+        }
+        if (addTaskName.length < 5 || addTaskName.length > 20) {
+            setErrorMessage("Task name must be between 5 and 20 characters long");
+            return false;
+        }
+        if (addTaskDescription.length < 5 || addTaskDescription.length > 100) {
+            setErrorMessage("Task description must be between 10 and 100 characters long");
+            return false;
+        }
+        return true;
+    };
+
     const addTodo = async () => {
-        if (addTaskName.trim() && addTaskDescription.trim()) {
+        if (validateAddTask()) {
             const newTodo = { name: addTaskName, description: addTaskDescription, completed: false };
 
             try {
@@ -61,13 +77,11 @@ const MainPage = () => {
                     await fetchTodos(filter);
                     setErrorMessage("");
                 } else {
-                    setErrorMessage("Failed to save todo");
+                    setErrorMessage("Failed to save task");
                 }
             } catch (error) {
                 setErrorMessage("Error: " + error.message);
             }
-        } else {
-            setErrorMessage("Task name and description cannot be empty");
         }
     };
 
@@ -89,7 +103,7 @@ const MainPage = () => {
             if (response.ok) {
                 setTodos(updatedTodos);
             } else {
-                setErrorMessage("Failed to update todo status");
+                setErrorMessage("Failed to update task status");
             }
         } catch (error) {
             setErrorMessage("Error: " + error.message);
@@ -101,7 +115,6 @@ const MainPage = () => {
 
         const result = await Swal.fire({
             title: 'Are you sure?',
-            //text: "You want to delete the event?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -124,7 +137,7 @@ const MainPage = () => {
                         'success'
                     );
                 } else {
-                    setErrorMessage("Failed to delete todo");
+                    setErrorMessage("Failed to delete task");
                 }
             } catch (error) {
                 setErrorMessage("Error: " + error.message);
@@ -140,8 +153,24 @@ const MainPage = () => {
         setEditErrorMessage("");
     };
 
+    const validateEditTask = () => {
+        if (!editTaskName.trim() || !editTaskDescription.trim()) {
+            setEditErrorMessage("Task name and description cannot be empty");
+            return false;
+        }
+        if (editTaskName.length < 5 || editTaskName.length > 20) {
+            setEditErrorMessage("Task name must be between 5 and 20 characters long");
+            return false;
+        }
+        if (editTaskDescription.length < 10 || editTaskDescription.length > 100) {
+            setEditErrorMessage("Task description must be between 10 and 100 characters long");
+            return false;
+        }
+        return true;
+    };
+
     const updateTodo = async () => {
-        if (editTaskName.trim() && editTaskDescription.trim()) {
+        if (validateEditTask()) {
             const updatedTodo = { name: editTaskName, description: editTaskDescription, completed: false };
 
             try {
@@ -168,13 +197,11 @@ const MainPage = () => {
                         confirmButtonColor: '#3085d6',
                     });
                 } else {
-                    setEditErrorMessage("Failed to update todo");
+                    setEditErrorMessage("Failed to update task");
                 }
             } catch (error) {
                 setEditErrorMessage("Error: " + error.message);
             }
-        } else {
-            setEditErrorMessage("Task name and description cannot be empty");
         }
     };
 
@@ -213,7 +240,6 @@ const MainPage = () => {
                     </button>
                 </div>
 
-                {/* Filter Dropdown */}
                 <div className="mb-6">
                     <select
                         value={filter}
